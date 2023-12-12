@@ -2,8 +2,9 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-//Routers
+//Routers importing
 const userRouter = require('./src/routes/userRoutes');
+const readingRouter = require('./src/routes/readingRoutes');
 const carRouter = require('./src/routes/carRoutes');
 const hospitalRouter = require('./src/routes/hospitalRoutes');
 const requestRouter = require('./src/routes/requestRoutes');
@@ -20,6 +21,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//Database connection
 const db = require("./src/models");
 db.mongoose
   .connect(db.url)
@@ -33,6 +35,7 @@ db.mongoose
 
 //Routers
 app.use('/api/users', userRouter);
+app.use('/api/readings', readingRouter);
 app.use('/api/cars', carRouter);
 app.use('/api/hospitals', hospitalRouter);
 app.use('/api/requests', requestRouter);

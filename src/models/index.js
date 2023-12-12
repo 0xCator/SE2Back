@@ -11,5 +11,9 @@ db.url = mongoString;
 
 //Models to import
 db.hospitals = require('./hospitalModel');
+db.requests = require('./requestModel');
+db.readings = require('./readingModel');
+db.cars = require('./carModel');
+db.users = require('./userModel');
 
 module.exports = db;

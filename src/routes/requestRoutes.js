@@ -1,20 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const requests = require("../controllers/requestController");
 
-router.get("/", (req, res) => {
-    res.send("Get all requests");
-});
+router.get("/", requests.findAll);
 
-router.get("/:reqID", (req, res) => {
-    res.send("Get " + req.params.reqID + "'s data");
-});
+router.get("/:reqID", requests.findOne);
 
-router.post("/", (req, res) => {
-    res.send("Create new request");
-});
+router.post("/", requests.create);
 
-router.delete("/:reqID", (req, res) => {
-    res.send("Delete " + req.params.reqID);
-});
+router.delete("/:reqID", requests.delete);
 
 module.exports = router;

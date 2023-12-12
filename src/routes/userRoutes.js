@@ -1,24 +1,23 @@
 const express = require("express");
 const router = express.Router();
+const users = require("../controllers/userController");
 
-router.get("/", (req, res) => {
-    res.send("Get all users");
-});
+router.get("/", users.findAll);
 
-router.get("/:userID", (req, res) => {
-    res.send("Get " + req.params.userID + "'s data");
-});
+router.get("/:userID", users.findOne);
 
-router.post("/", (req, res) => {
-    res.send("Create new user");
-});
+router.get("/username/:username", users.findByUsername);
 
-router.patch("/:userID", (req,res) => {
-    res.send("Update " + req.params.userID + "'s data");
-});
+router.post("/", users.create);
 
-router.delete("/:userID", (req, res) => {
-    res.send("Delete " + req.params.userID);
-});
+router.patch("/:userID/medicalHistory", users.updateMedHistory);
+
+router.patch("/:userID/Relatives", users.addRelative);
+router.delete("/:userID/Relatives", users.removeRelative);
+
+router.patch("/:userID/Patients", users.addPatient);
+router.delete("/:userID/Patients", users.removePatient);
+
+router.delete("/:userID", users.delete);
 
 module.exports = router;

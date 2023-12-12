@@ -1,24 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const cars = require("../controllers/carController");
 
-router.get("/", (req, res) => {
-    res.send("Get all users");
-});
+router.get("/", cars.findAll);
 
-router.get("/:carID", (req, res) => {
-    res.send("Get " + req.params.carID + "'s data");
-});
+router.get("/:carID", cars.findOne);
 
-router.post("/", (req, res) => {
-    res.send("Create new user");
-});
+router.post("/", cars.create);
 
-router.patch("/:carID", (req,res) => {
-    res.send("Update " + req.params.carID + "'s data");
-});
+router.patch("/:carID", cars.update);
 
-router.delete("/:carID", (req, res) => {
-    res.send("Delete " + req.params.carID);
-});
+router.delete("/:carID", cars.delete);
 
 module.exports = router;
