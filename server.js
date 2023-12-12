@@ -11,7 +11,7 @@ const requestRouter = require('./src/routes/requestRoutes');
 const functionRouter = require('./src/routes/functionRoutes');
 
 var corsOptions = {
-    origin: "http://localhost:4200"
+    origin: "*"
 };
 
 const app = express();
