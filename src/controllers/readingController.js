@@ -48,7 +48,16 @@ exports.delete = async (req,res) => {
     try {
         const id = req.params.readingID;
         const result = await Reading.findByIdAndDelete(id);
-        res.send('Deleted hospital');
+        res.send('Deleted reading');
+    } catch(error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+exports.deleteAll = async (req,res) => {
+    try {
+        const result = await Reading.deleteMany({});
+        res.send('deleted all');
     } catch(error) {
         res.status(500).json({message: error.message});
     }

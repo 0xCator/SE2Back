@@ -12,4 +12,6 @@ router.post("/", readings.create);
 
 router.delete("/:readingID", readings.delete);
 
+router.delete("/", readings.deleteAll);
+
 module.exports = router;
