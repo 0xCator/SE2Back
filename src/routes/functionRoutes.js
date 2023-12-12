@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const functions = require("../controllers/functionController");
 
-router.get("/login", (req, res) => {
-    res.send("Login");
-});
+router.get("/login", functions.login);
 
-router.patch("/patch", (req, res) => {
-    res.send("Patch");
-});
+router.patch("/pair", functions.pair);
 
 module.exports = router;
