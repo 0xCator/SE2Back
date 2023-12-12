@@ -2,8 +2,8 @@ const db = require("../models");
 
 exports.login = async (req, res) => {
     try {
-        const currentUsername = req.body.username;
-        const currentPassword = req.body.password;
+        const currentUsername = req.params.username;
+        const currentPassword = req.params.password;
 
         const result = await db.users.findOne(
             {username: currentUsername, 
