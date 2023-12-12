@@ -1,6 +1,6 @@
 //Handles the basic database connection
 require('dotenv').config();
-const mongoString = process.env.DATABASE_URL;
+const mongoString ="mongodb+srv://nexus:pass@cluster0.midobxk.mongodb.net/";
 
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;

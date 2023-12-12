@@ -61,6 +61,29 @@ exports.updateMedHistory = async (req,res) => {
     }
 }
 
+exports.updateReadings = async (req,res) => {
+    try {
+        const newReadings = {
+            heartRate: req.body.heartRate,
+            bloodPressure: req.body.bloodPressure,
+            location: req.body.location
+        }
+        const newState = req.body.state;
+        const id = req.params.userID;
+        const options = {new: true};
+
+        const result = await Users.findByIdAndUpdate(id,
+            {$push: {'patientData.patientReadings':newReadings},
+            $set: {'patientData.state':newState}},
+             options);
+
+        
+            res.send(result);
+    } catch (error) {
+        res.status(400).json({message: error.message});
+    }
+}
+
 exports.addRelative = async (req,res) => {
     try {
         const relativeUsername = req.body.relativeUsername;

@@ -45,6 +45,33 @@ const userModel = new mongoose.Schema({
         },
         relatives: [{
             type: String
+        }],
+        patientReadings:[{
+
+            heartRate: {
+                required: true,
+                type: Number,
+            },
+            bloodPressure: {
+                systolic: {
+                    required: true,
+                    type: Number,
+                },
+                diastolic: {
+                    required: true,
+                    type: Number,
+                }
+            },
+            location: {
+                longitude: {
+                    required: true,
+                    type: Number,
+                },
+                latitude: {
+                    required: true,
+                    type: Number,
+                },
+            }
         }]
     },
     relativeData: {
