@@ -46,7 +46,7 @@ const userModel = new mongoose.Schema({
         relatives: [{
             type: String
         }],
-        patientReadings:[{
+        patientReadings:{
 
             heartRate: {
                 required: true,
@@ -72,7 +72,7 @@ const userModel = new mongoose.Schema({
                     type: Number,
                 },
             }
-        }]
+        }
     },
     relativeData: {
         assignedPatients: [{

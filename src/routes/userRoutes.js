@@ -11,6 +11,7 @@ router.get("/username/:username", users.findByUsername);
 router.post("/", users.create);
 
 router.patch("/:userID/medicalHistory", users.updateMedHistory);
+
 router.patch("/:userID/readings", users.updateReadings);
 
 router.patch("/:userID/Relatives", users.addRelative);

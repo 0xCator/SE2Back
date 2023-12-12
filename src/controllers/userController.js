@@ -68,15 +68,15 @@ exports.updateReadings = async (req,res) => {
             bloodPressure: req.body.bloodPressure,
             location: req.body.location
         }
+
         const newState = req.body.state;
         const id = req.params.userID;
         const options = {new: true};
 
         const result = await Users.findByIdAndUpdate(id,
-            {$push: {'patientData.patientReadings':newReadings},
-            $set: {'patientData.state':newState}},
+            {$set: {'patientData.patientReadings':newReadings,
+            'patientData.state':newState}},
              options);
-
         
             res.send(result);
     } catch (error) {
