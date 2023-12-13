@@ -14,11 +14,11 @@ router.patch("/:userID/medicalHistory", users.updateMedHistory);
 
 router.patch("/:userID/readings", users.updateReadings);
 
-router.patch("/:userID/Relatives", users.addRelative);
-router.delete("/:userID/Relatives", users.removeRelative);
+router.patch("/:userID/addRelatives", users.addRelative);
+router.patch("/:userID/removeRelatives", users.removeRelative);
 
-router.patch("/:userID/Patients", users.addPatient);
-router.delete("/:userID/Patients", users.removePatient);
+router.patch("/:userID/addPatients", users.addPatient);
+router.patch("/:userID/removePatients", users.removePatient);
 
 router.delete("/:userID", users.delete);
 
