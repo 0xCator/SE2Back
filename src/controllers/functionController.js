@@ -15,6 +15,18 @@ exports.login = async (req, res) => {
     }
 };
 
+function UnpairBracelet(braceletID) {
+    const b =JSON.parse(`{"braceletId": "${braceletID}"}`);
+
+    fetch('http://localhost:1337/api/unpair/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(b),
+    }).then(response => response)
+}
+
 exports.pair = async (req, res) => {
     try {
         const currentToken = req.body.token;
@@ -24,6 +36,10 @@ exports.pair = async (req, res) => {
             {'patientData.token': currentToken},
             '_id'
         );
+        const currentBracelet = await db.users.findOne(result._id, 'patientData.pairedBracelet');
+        if (currentBracelet.patientData.pairedBracelet !== "-1" && currentBracelet.patientData.pairedBracelet !== braceletID) {
+            UnpairBracelet(currentBracelet.patientData.pairedBracelet);
+        }
         if (result) {
             await db.users.findByIdAndUpdate(result._id, 
                 {$set: {'patientData.pairedBracelet': braceletID}}, 
