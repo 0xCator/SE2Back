@@ -6,7 +6,7 @@ const requestModel = new mongoose.Schema({
         required: true
     },
     requestType: {
-        type: String,
+        type: Number,
         required: true
     },
     location: {

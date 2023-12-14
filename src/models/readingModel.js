@@ -5,6 +5,10 @@ const readingModel = new mongoose.Schema({
         required: true,
         type: String,
     },
+    readingState: {
+        required: true,
+        type: Number,
+    },
     heartRate: {
         required: true,
         type: Number,

@@ -1,5 +1,30 @@
 const db = require("../models");
 const Car = db.cars;
+const request = db.requests;
+
+function getLastRequest(userId) {
+    try {
+        const data = request.find({userID: userId}).sort({createdAt: -1});
+        return data[0];
+    } catch(error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+exports.idle = async (req, res) => {
+    try {
+        const id = req.params.userID;
+        const lastRequest = getLastRequest(id);
+        const carID = lastRequest.carID;
+        const update = {};
+        const options = {new: true};
+        update['carStatus'] = 0;
+        result = await Car.findOneAndUpdate(carID, {$set: update}, options);
+        res.send(result);
+    } catch(error) {
+        res.status(400).json({ message: error.message });
+    }
+}
 
 exports.findAll = async (req, res) => {
     try {
