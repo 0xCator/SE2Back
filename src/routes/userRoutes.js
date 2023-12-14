@@ -17,9 +17,6 @@ router.patch("/:userID/readings", users.updateReadings);
 router.patch("/:userID/addRelatives", users.addRelative);
 router.patch("/:userID/removeRelatives", users.removeRelative);
 
-router.patch("/:userID/addPatients", users.addPatient);
-router.patch("/:userID/removePatients", users.removePatient);
-
 router.delete("/:userID", users.delete);
 
 module.exports = router;

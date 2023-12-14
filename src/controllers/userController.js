@@ -93,8 +93,11 @@ exports.addRelative = async (req,res) => {
         const result = await Users.findByIdAndUpdate(id, 
             {$push: {'patientData.relatives':relativeUsername}},
              options);
+
+        const res2 = await Users.findOneAndUpdate({username: relativeUsername},
+            {$push: {'relativeData.assignedPatients': id}}, options);
         
-        res.send(result);
+        res.send(res2);
     } catch (error) {
         res.status(400).json({message: error.message});
     }
@@ -109,38 +112,9 @@ exports.removeRelative = async (req,res) => {
         const result = await Users.findByIdAndUpdate(id, 
             {$pull: {'patientData.relatives':relativeUsername}},
              options);
-        
-        res.send(result);
-    } catch (error) {
-        res.status(400).json({message: error.message});
-    }
-}
 
-exports.addPatient = async (req,res) => {
-    try {
-        const patientUsername = req.body.patientUsername;
-        const id = req.params.userID;
-        const options = {new: true};
-
-        const result = await Users.findByIdAndUpdate(id, 
-            {$push: {'relativeData.relatives':patientUsername}},
-             options);
-        
-        res.send(result);
-    } catch (error) {
-        res.status(400).json({message: error.message});
-    }
-}
-
-exports.removePatient = async (req,res) => {
-    try {
-        const patientUsername = req.body.patientUsername;
-        const id = req.params.userID;
-        const options = {new: true};
-
-        const result = await Users.findByIdAndUpdate(id, 
-            {$pull: {'relativeData.relatives':patientUsername}},
-             options);
+        const res2 = await Users.findOneAndUpdate({username: relativeUsername},
+        {$pull: {'relativeData.assignedPatients': id}}, options);
         
         res.send(result);
     } catch (error) {
