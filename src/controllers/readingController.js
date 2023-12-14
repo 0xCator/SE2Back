@@ -1,7 +1,7 @@
 const db = require("../models");
 const Reading = db.readings;
 const Car = db.cars;
-const request = db.requests;
+const Request = db.requests;
 
 exports.findAll = async (req,res) => {
     try {
@@ -30,35 +30,33 @@ exports.findSpecific = async (req,res) => {
     }
 }
 
-function getCar(){
+async function getCar() {
     try {
-        const data = Car.find();
+        const data = await Car.find();
+
         for (let i = 0; i < data.length; i++) {
             if(data[i].carStatus === 0){
-                return data[i]._id;
+                return data[i]._id.toString();
             }
         }
-
-        return null;
+        
     }catch(error) {
-        res.status(500).json({message: error.message});
-    }
-}
-
-function  updateCarStatus(carID, status) {
-    try {
-        const update = {};
-        const options = {new: true};
-        update['carStatus'] = status;
-        const result = Car.findByIdAndUpdate(carID, {$set: update}, options);
-        return result;
-    } catch(error) {
         res.status(400).json({ message: error.message });
     }
 }
 
-function sendRequest(userId, location ) {
-    const car  =getCar();
+async function  updateCarStatus(carID, status) {
+    try {
+        const update = {carStatus: status};
+        const options = {new: true};
+        const result = await Car.findByIdAndUpdate(carID, {$set: update}, options);
+        return result;
+    } catch(error) {
+    }
+}
+
+async function sendRequest(userId, location ) {
+    const car  = await getCar();
     updateCarStatus(car, 1);
     const data = new Request({
         userID: userId, 
@@ -68,10 +66,8 @@ function sendRequest(userId, location ) {
     });
 
     try {
-        const dataToSave = data.save();
-        res.status(200).json(dataToSave);
+        const dataToSave = await data.save();
     } catch (error) {
-        res.status(400).json({message: error.message});
     }
 }
 

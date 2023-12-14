@@ -2,9 +2,9 @@ const db = require("../models");
 const Car = db.cars;
 const request = db.requests;
 
-function getLastRequest(userId) {
+async function getLastRequest(userId) {
     try {
-        const data = request.find({userID: userId}).sort({createdAt: -1});
+        const data = await request.find({userID: userId}).sort({createdAt: -1});
         return data[0];
     } catch(error) {
         res.status(500).json({message: error.message});
@@ -29,6 +29,7 @@ exports.idle = async (req, res) => {
 exports.findAll = async (req, res) => {
     try {
         const data = await Car.find();
+
         res.json(data);
     } catch (error) {
         res.status(500).json({message: error.message});
