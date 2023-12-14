@@ -14,6 +14,18 @@ const userModel = new mongoose.Schema({
         required: true,
         type: Number //0: admin, 1: ambulance manager, 2: user
     },
+    notificationsToken: {
+        type: String,
+        default: ""
+    },
+    notifications: [{
+        title: {
+            type: String
+        },
+        body: {
+            type: String
+        },
+    }],
     //Specific to patient/relative
     userInfo: {
         fullName: {
