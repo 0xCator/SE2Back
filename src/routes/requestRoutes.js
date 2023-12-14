@@ -9,5 +9,6 @@ router.get("/:reqID", requests.findOne);
 router.post("/", requests.create);
 
 router.delete("/:reqID", requests.delete);
+router.delete("/", requests.deleteAll);
 
 module.exports = router;

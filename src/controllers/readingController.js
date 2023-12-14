@@ -1,7 +1,10 @@
 const db = require("../models");
 const Reading = db.readings;
-const Car = db.cars;
-const Request = db.requests;
+const functionController = require("./functionController");
+const userController = require("./userController");
+
+
+const requestController = require("./requestController");
 
 exports.findAll = async (req,res) => {
     try {
@@ -30,46 +33,8 @@ exports.findSpecific = async (req,res) => {
     }
 }
 
-async function getCar() {
-    try {
-        const data = await Car.find();
 
-        for (let i = 0; i < data.length; i++) {
-            if(data[i].carStatus === 0){
-                return data[i]._id.toString();
-            }
-        }
-        
-    }catch(error) {
-        res.status(400).json({ message: error.message });
-    }
-}
 
-async function  updateCarStatus(carID, status) {
-    try {
-        const update = {carStatus: status};
-        const options = {new: true};
-        const result = await Car.findByIdAndUpdate(carID, {$set: update}, options);
-        return result;
-    } catch(error) {
-    }
-}
-
-async function sendRequest(userId, location ) {
-    const car  = await getCar();
-    updateCarStatus(car, 1);
-    const data = new Request({
-        userID: userId, 
-        requestType:1 , 
-        location: location,
-        carID: car, 
-    });
-
-    try {
-        const dataToSave = await data.save();
-    } catch (error) {
-    }
-}
 
 exports.create = async (req,res) => {
     const data = new Reading({
@@ -79,9 +44,28 @@ exports.create = async (req,res) => {
         location: req.body.location,
         readingState: req.body.state
     })
+    const username = await userController.getUsername(req.body.userID);
         
+    const relatives = await userController.getRelative(username);
     if(req.body.state === 2){
-        sendRequest(req.body.userID, req.body.location);
+        const err = requestController.sendRequest(req.body.userID, req.body.location);
+        if(!err){
+            functionController.notify(username, "Request for Ambulance", "Ambulance is on the way");
+            for (let i = 0; i < relatives.length; i++) {
+                functionController.notify(relatives[i], "Request for Ambulance", `Emergency your relative ${username} is dying`);
+            }
+        }else{
+            functionController.notify(username, "Rest in peace", "No Ambulance Available");
+            for (let i = 0; i < relatives.length; i++) {
+                functionController.notify(relatives[i], "Nothing we can do", `Good luck in afterlife ${username}`);
+            }
+        }
+    
+    }else if(req.body.state === 1){
+        functionController.notify(username, "Be careful!", "Your readings were recently unstable!");
+        for (let i = 0; i < relatives.length; i++) {
+            functionController.notify(relatives[i], "Be careful!", `Your relative ${username}'s readings were recently unstable!`);
+        }
     }
         
     try {
@@ -104,7 +88,7 @@ exports.delete = async (req,res) => {
 
 exports.deleteAll = async (req,res) => {
     try {
-        const result = await Reading.deleteMany({});
+        const result = await Request.deleteMany({});
         res.send('deleted all');
     } catch(error) {
         res.status(500).json({message: error.message});

@@ -1,30 +1,41 @@
 const db = require("../models");
 const Car = db.cars;
-const request = db.requests;
+const requestController = require("./requestController");
 
-async function getLastRequest(userId) {
-    try {
-        const data = await request.find({userID: userId}).sort({createdAt: -1});
-        return data[0];
-    } catch(error) {
-        res.status(500).json({message: error.message});
-    }
-}
 
-exports.idle = async (req, res) => {
+exports.getCar = async function getCar() {
     try {
-        const id = req.params.userID;
-        const lastRequest = getLastRequest(id);
-        const carID = lastRequest.carID;
-        const update = {};
-        const options = {new: true};
-        update['carStatus'] = 0;
-        result = await Car.findOneAndUpdate(carID, {$set: update}, options);
-        res.send(result);
-    } catch(error) {
+        const data = await Car.find();
+
+        for (let i = 0; i < data.length; i++) {
+            if(data[i].carStatus === 0){
+                return data[i]._id.toString();
+            }
+        }
+        
+        return null;
+    }catch(error) {
         res.status(400).json({ message: error.message });
     }
 }
+exports.updateCarStatus = async function updateCarStatus(carID, status) {
+    try {
+        const update = {carStatus: status};
+        const options = {new: true};
+        const result = await Car.findByIdAndUpdate(carID, {$set: update}, options);
+        if(status !==0){
+            setTimeout(async () => {
+                const update = {carStatus: 0};
+                await Car.findByIdAndUpdate(carID, {$set: update}, options);
+                await requestController.deleteLastRequest(carID);
+            }, 5 * 1000 * 60); 
+        }
+
+        return result;
+    } catch(error) {
+    }
+}
+
 
 exports.findAll = async (req, res) => {
     try {

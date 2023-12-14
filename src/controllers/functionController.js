@@ -55,22 +55,45 @@ function sendNotification(to, title, body) {
 
 }
 
-exports.sendNotification = async (req, res) => {
+exports.notify = async function notify(username , title, body) {
     try {
-        const userName = req.body.username;
-        const title = req.body.title;
-        const body = req.body.body;
+
         const notification = {
             title: title,
             body: body
         }
         const result = await db.users.findOne(
-            {username: userName},
+            {username: username},
             'notificationsToken');
 
         if (result) {
             await db.users.findOneAndUpdate(
-                {username: userName},
+                {username: username},
+                {$push: {notifications: notification}}
+            );
+            sendNotification(result.notificationsToken, title, body);
+        }
+    }catch (error) {
+    }
+}
+
+exports.sendNotification = async (req, res) => {
+    try {
+        const username = req.body.username;
+
+        const title = req.body.title;
+        const body = req.body.body;
+        const notification = {
+            title: title,
+            body: body 
+        }
+        const result = await db.users.findOne(
+            {username: username},
+            'notificationsToken');
+
+        if (result) {
+            await db.users.findOneAndUpdate(
+                {username: username},
                 {$push: {notifications: notification}}
             );
             sendNotification(result.notificationsToken, title, body);
@@ -79,6 +102,7 @@ exports.sendNotification = async (req, res) => {
     }catch (error) {
         res.status(500).json({message: error.message});
     }
+    
 }
 
 function UnpairBracelet(braceletID) {

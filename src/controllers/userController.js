@@ -1,12 +1,29 @@
 const db = require('../models');
 const Users = db.users;
 
+exports.getRelative= async function getRelativePatients(username) {
+    try {
+        const result = await Users.findOne({username: username}, 'patientData.relatives');
+        return result.patientData.relatives;
+    } catch (error) {
+        return null;
+    }
+}
+
 exports.findAll = async (req,res) => {
     try {
         const data = await Users.find();
         res.json(data);
     } catch (error) {
         res.status(500).json({message: error.message});
+    }
+}
+exports.getUsername = async function getUsername(userID) {
+    try {
+        const data = await Users.findById(userID, 'username');
+        return data.username;
+    } catch (error) {
+        return null;
     }
 }
 

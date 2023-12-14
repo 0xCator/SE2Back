@@ -3,7 +3,6 @@ const router = express.Router();
 const cars = require("../controllers/carController");
 
 router.get("/", cars.findAll);
-router.patch("/idle/:userID", cars.idle);
 
 router.get("/:carID", cars.findOne);
 
