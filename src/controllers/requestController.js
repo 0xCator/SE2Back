@@ -13,6 +13,15 @@ exports.deleteLastRequest = async function deleteLastRequest(carID) {
 }
 exports.sendRequest = async function sendRequest(userId, location ) {
     const car  = await carController.getCar();
+    username = await userController.getUsername(userId);
+    //check if uer have request or not 
+    const r = await Request.findOne({userID: userId})
+    if(r != null){
+        user  = await userController.findUser(username);
+        functionController.notify(username, "Request for Ambulance", "You already have a request");
+        await functionController.sendEmail(user.userInfo.email, "Request for Ambulance", "You already have a request");
+        return 1;
+    }
     const relatives = await userController.getRelative(username);
     if(car == null){
         user  = await userController.findUser(username);
@@ -23,7 +32,7 @@ exports.sendRequest = async function sendRequest(userId, location ) {
             functionController.notify(relatives[i], "Request for Ambulance", `Emergency your relative ${username} is dying`);
             await functionController.sendEmail(rel.userInfo.email, "Request for Ambulance", `Emergency your relative ${username} is dying`);
         }
-        return 1;
+        return -1;
     }
     carController.updateCarStatus(car, 1);
     const data = new Request({
@@ -69,6 +78,10 @@ exports.create = async (req,res) => {
     const err = this.sendRequest(req.body.userID, req.body.location);
     if(err === -1){
         res.status(500).json({message: "No car available"});
+    }else if(err === 1){
+        res.status(500).json({message: "User already have a request"});
+    }else{
+        res.status(200).json({message: "Request sent"});
     }
 }
 

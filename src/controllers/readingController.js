@@ -54,6 +54,7 @@ exports.create = async (req,res) => {
         functionController.notify(username, "Be careful!", "Your readings were recently unstable!");
         await functionController.sendEmail(user.userInfo.email, "Be careful!", "Your readings were recently unstable!");
         for (let i = 0; i < relatives.length; i++) {
+            rel = await userController.findUser(relatives[i]);
             functionController.notify(relatives[i], "Be careful!", `Your relative ${username}'s readings were recently unstable!`);
             await functionController.sendEmail(rel.userInfo.email, "Be careful!", `Your relative ${username}'s readings were recently unstable!`);
         }
