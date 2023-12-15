@@ -18,6 +18,16 @@ exports.findAll = async (req,res) => {
         res.status(500).json({message: error.message});
     }
 }
+
+    exports.findAllPatients = async (req,res) => {
+        try {
+            const data = await Users.find({userType: 2});
+            res.json(data);
+        } catch (error) {
+            res.status(500).json({message: error.message});
+        }
+    }
+
 exports.getUsername = async function getUsername(userID) {
     try {
         const data = await Users.findById(userID, 'username');

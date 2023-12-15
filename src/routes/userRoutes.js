@@ -4,6 +4,8 @@ const users = require("../controllers/userController");
 
 router.get("/", users.findAll);
 
+router.get("/patients", users.findAllPatients);
+
 router.get("/:userID", users.findOne);
 
 router.get("/username/:username", users.findByUsername);
