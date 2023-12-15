@@ -48,23 +48,14 @@ exports.create = async (req,res) => {
         
     const relatives = await userController.getRelative(username);
     if(req.body.state === 2){
-        const err = requestController.sendRequest(req.body.userID, req.body.location);
-        if(!err){
-            functionController.notify(username, "Request for Ambulance", "Ambulance is on the way");
-            for (let i = 0; i < relatives.length; i++) {
-                functionController.notify(relatives[i], "Request for Ambulance", `Emergency your relative ${username} is dying`);
-            }
-        }else{
-            functionController.notify(username, "Rest in peace", "No Ambulance Available");
-            for (let i = 0; i < relatives.length; i++) {
-                functionController.notify(relatives[i], "Nothing we can do", `Good luck in afterlife ${username}`);
-            }
-        }
-    
+       await requestController.sendRequest(req.body.userID, req.body.location);
     }else if(req.body.state === 1){
+        user  = await userController.findUser(username);
         functionController.notify(username, "Be careful!", "Your readings were recently unstable!");
+        await functionController.sendEmail(user.userInfo.email, "Be careful!", "Your readings were recently unstable!");
         for (let i = 0; i < relatives.length; i++) {
             functionController.notify(relatives[i], "Be careful!", `Your relative ${username}'s readings were recently unstable!`);
+            await functionController.sendEmail(rel.userInfo.email, "Be careful!", `Your relative ${username}'s readings were recently unstable!`);
         }
     }
         

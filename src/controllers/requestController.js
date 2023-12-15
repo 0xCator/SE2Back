@@ -1,6 +1,8 @@
 const db = require("../models");
 const Request = db.requests;
 const carController = require("./carController");
+const userController = require("./userController");
+const functionController = require("./functionController");
 
 exports.deleteLastRequest = async function deleteLastRequest(carID) {
     try {
@@ -11,8 +13,17 @@ exports.deleteLastRequest = async function deleteLastRequest(carID) {
 }
 exports.sendRequest = async function sendRequest(userId, location ) {
     const car  = await carController.getCar();
+    const relatives = await userController.getRelative(username);
     if(car == null){
-        return -1;
+        user  = await userController.findUser(username);
+        functionController.notify(username, "Request for Ambulance", "Ambulance is on the way");
+        await functionController.sendEmail(user.userInfo.email, "Request for Ambulance", "Ambulance is on the way");
+        for (let i = 0; i < relatives.length; i++) {
+            rel= await userController.findUser(relatives[i]);
+            functionController.notify(relatives[i], "Request for Ambulance", `Emergency your relative ${username} is dying`);
+            await functionController.sendEmail(rel.userInfo.email, "Request for Ambulance", `Emergency your relative ${username} is dying`);
+        }
+        return 1;
     }
     carController.updateCarStatus(car, 1);
     const data = new Request({
@@ -24,6 +35,14 @@ exports.sendRequest = async function sendRequest(userId, location ) {
 
     try {
         const dataToSave = await data.save();
+        user  = await userController.findUser(username);
+        functionController.notify(username, "Request for Ambulance", "Ambulance is on the way");
+        await functionController.sendEmail(user.userInfo.email, "Request for Ambulance", "Ambulance is on the way");
+        for (let i = 0; i < relatives.length; i++) {
+            rel= await userController.findUser(relatives[i]);
+            functionController.notify(relatives[i], "Request for Ambulance", `Emergency your relative ${username} is dying`);
+            await functionController.sendEmail(rel.userInfo.email, "Request for Ambulance", `Emergency your relative ${username} is dying`);
+        }
         return 0;
     } catch (error) {
     }
@@ -47,20 +66,12 @@ exports.findOne = async (req,res) => {
 }
 
 exports.create = async (req,res) => {
-    const data = new Request({
-        userID: req.body.userID,
-        requestType: req.body.requestType,
-        location: req.body.location,
-        carID: req.body.carID
-    })
-
-    try {
-        const dataToSave = await data.save();
-        res.status(200).json(dataToSave);
-    } catch (error) {
-        res.status(400).json({message: error.message});
+    const err = this.sendRequest(req.body.userID, req.body.location);
+    if(err === -1){
+        res.status(500).json({message: "No car available"});
     }
 }
+
 exports.deleteAll = async (req,res) => {
     try {
         const result = await Request.deleteMany();

@@ -1,5 +1,64 @@
 const db = require("../models");
-require('dotenv').config();
+require('dotenv').config({path: '../../.env'});
+const { EmailClient } = require("@azure/communication-email");
+
+
+const connectionString = process.env.CONN_STR;
+const emailClient = new EmailClient(connectionString);
+
+exports.sendEmail = async function sendEmail(email, subject, text) {
+    const POLLER_WAIT_TIME = 10
+    try {
+        const message = {
+            senderAddress:process.env.EMAIL,
+            content: {
+                subject: subject,
+                plainText: text,
+            },
+            recipients: {
+                to: [
+                    {
+                        address: email,
+                        displayName: "Customer Name",
+                    },
+                ],
+            },
+        };
+
+        const poller = await emailClient.beginSend(message);
+
+        if (!poller.getOperationState().isStarted) {
+            throw "Poller was not started."
+        }
+
+        let timeElapsed = 0;
+        while(!poller.isDone()) {
+            poller.poll();
+
+            await new Promise(resolve => setTimeout(resolve, POLLER_WAIT_TIME * 1000));
+            timeElapsed += 10;
+
+            if(timeElapsed > 18 * POLLER_WAIT_TIME) {
+                throw "Polling timed out.";
+            }
+        }
+
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+exports.email = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const subject = req.body.subject;
+        const text = req.body.text;
+        this.sendEmail(email, subject, text)
+        res.json({message: "Email sent"});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+};
 
 exports.login = async (req, res) => {
     try {

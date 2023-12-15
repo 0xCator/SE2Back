@@ -27,6 +27,15 @@ exports.getUsername = async function getUsername(userID) {
     }
 }
 
+exports.findUser = async function (username){
+    try {
+        const data = await Users.findOne({username: username});
+        return data;
+    } catch (error) {
+        return null;
+    }
+}
+
 exports.findOne = async (req,res) => {
     try {
         const data = await Users.findById(req.params.userID);
