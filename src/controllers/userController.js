@@ -1,5 +1,6 @@
 const db = require('../models');
 const Users = db.users;
+const readingController = require('./readingController');
 
 exports.getRelative= async function getRelativePatients(username) {
     try {
@@ -161,6 +162,25 @@ exports.removeRelative = async (req,res) => {
 exports.delete = async (req,res) => {
     try {
         const id = req.params.userID;
+
+        const userToDelete = await Users.findById(id);
+        
+        //remove the user from the relatives' assignedPatients list
+        await Users.updateMany(
+            {'relativeData.assignedPatients': id},
+            {$pull: {'relativeData.assignedPatients': id}}
+        );
+        // remove the user from patients' relatives list
+        await Users.updateMany(
+            {'patientData.relatives': userToDelete.username},
+            {$pull: {'patientData.relatives': userToDelete.username}}
+        );
+        // get user's request 
+        const reqToDelete = await requestController.getReqByUsername(id);
+        // delete the request if found 
+        if (reqToDelete) {
+            await requestController.deleteReq(reqToDelete);
+        }
         const result = await Users.findByIdAndDelete(id);
         res.send('Deleted user');
     } catch(error) {

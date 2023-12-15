@@ -100,6 +100,29 @@ exports.create = async (req,res) => {
     }
 }
 
+exports.getReqByUserId = async (userID) => {
+    try {
+        const data = await Request.findOne({userID: userID});
+        if(data == null){
+            return null
+        }
+        return data._id;
+    } catch(error) {
+        return null;
+    }
+}
+
+exports.getReqByCarId = async (carID) => {
+    try {
+        const data = await Request.findOne({carID: carID});
+        if(date == null){
+            return null;
+        }
+        return data._id;
+    } catch (error) {
+        
+    }
+}
 exports.deleteAll = async (req,res) => {
     try {
         const result = await Request.deleteMany();
@@ -109,11 +132,25 @@ exports.deleteAll = async (req,res) => {
     }
 }
 
+exports.deleteReq = async (reqID) => {
+    try {
+        const reqToDelete = await Request.findById(reqID);
+        // get car id
+        const carID = reqToDelete.carID;
+
+        //change car status 
+        carController.updateCarStatus(carID, 0, reqToDelete.location);
+        //delete request 
+        const result = await Request.findByIdAndDelete(reqID);
+    } catch(error) {
+    }
+}
+
 exports.delete = async (req,res) => {
     try {
         const id = req.params.reqID;
-        const result = await Request.findByIdAndDelete(id);
-        res.send('Deleted hospital');
+        this.deleteReq(id);
+        res.send('Deleted request');
     } catch(error) {
         res.status(500).json({message: error.message});
     }

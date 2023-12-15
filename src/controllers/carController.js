@@ -124,6 +124,13 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         const id = req.params.carID;
+        // get car request if exists
+        const reqID = await requestController.getReqByCarId(id);
+        // delete request 
+        if(reqID){
+            await requestController.deleteReq(reqID);
+        }
+        // delete car 
         const result = await Car.findByIdAndDelete(id);
         res.send('Deleted car');
     } catch(error) {
