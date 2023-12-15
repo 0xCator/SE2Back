@@ -5,7 +5,6 @@ const userController = require("./userController");
 const functionController = require("./functionController");
 
 function stopBracelet(braceletID) {
-    console.log("hello")
     const b =JSON.parse(`{"braceletId": "${braceletID}"}`);
 
     fetch('http://localhost:1337/api/stop/', {
