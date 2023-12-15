@@ -35,6 +35,7 @@ exports.sendRequest = async function sendRequest(userId, location ) {
         return -1;
     }
     carController.updateCarStatus(car, 1);
+    carController.updateCarDestination(car, location);
     const data = new Request({
         userID: userId, 
         requestType:1 , 
