@@ -45,11 +45,12 @@ exports.create = async (req,res) => {
         readingState: req.body.state,
         isNotify : req.body.isNotify,
     })
+    const nearestHospital = req.body.nearestHospital;
     const username = await userController.getUsername(req.body.userID);
         
     const relatives = await userController.getRelative(username);
     if(req.body.state === 2){
-       await requestController.sendRequest(req.body.userID, req.body.location);
+       await requestController.sendRequest(req.body.userID, req.body.location, nearestHospital);
     }else if(req.body.state === 1 && req.body.isNotify === true){
         user  = await userController.findUser(username);
         functionController.notify(username, "Be careful!", "Your readings were recently unstable!, Click to request abmulance");

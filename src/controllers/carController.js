@@ -39,17 +39,21 @@ exports.updateCarLocation = async function updateCarLocation(carID, location) {
     }
 }
 
-exports.updateCarStatus = async function updateCarStatus(carID, status, location) {
+exports.updateCarStatus = async function updateCarStatus(carID, status, location, nearestHospital) {
     try {
         const update = {carStatus: status, destination: location};
         const options = {new: true};
+        const loc = {
+            longitude: nearestHospital.longitude,
+            latitude: nearestHospital.latitude
+        }
         const result = await Car.findByIdAndUpdate(carID, {$set: update}, options);
         setTimeout(async () => {
             const update = {carStatus: 0};
             await Car.findByIdAndUpdate(carID, {$set: update}, options);
             await requestController.deleteLastRequest(carID);
-            await this.updateCarLocation(carID, location);
-        }, 5 * 1000 ); 
+            await this.updateCarLocation(carID, loc);
+        }, 5 * 60 * 1000 ); 
 
         return result;
     } catch(error) {

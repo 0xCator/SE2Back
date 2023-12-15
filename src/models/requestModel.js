@@ -18,8 +18,23 @@ const requestModel = new mongoose.Schema({
             type: Number,
             required: true
         }
-    }
-    ,
+    },
+    hospital:{
+        name:{
+            type: String,
+            required: true
+        },
+        location: {
+            longitude: {
+                type: Number,
+                required: true
+            },
+            latitude: {
+                type: Number,
+                required: true
+            }
+        },
+    },
     carID: {
         type: String,
         required: true
