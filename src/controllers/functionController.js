@@ -1,4 +1,5 @@
 const db = require("../models");
+require('dotenv').config();
 
 exports.login = async (req, res) => {
     try {
@@ -31,7 +32,7 @@ exports.notificationsToken = async (req, res) => {
 }
 
 function sendNotification(to, title, body) {
-    const key = "AAAAjkN85Zc:APA91bHdfNQYLTIRTSwe_SlBZd4MTr9WP6TGBdp98PuQh8oa8z_CgnXYQkShWU1EOjxNOBtxtwHXIeMH6xo8UNvs06IOZaGc4uKGmeD7Zfi7eQ8w-Bc54qqlcImYGu8U-f09uQ4HEG6z";
+    const key = process.env.API_KEY;
     const notification = { 
         title: title,
         body: body,
