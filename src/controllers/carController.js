@@ -18,7 +18,7 @@ exports.getCar = async function getCar() {
         res.status(400).json({ message: error.message });
     }
 }
-exports.updateCarDestination = async function updateCarLocation(carID, location) {
+exports.updateCarDestination = async function updateCarDestination(carID, location) {
     try{
         const update = {destination: location};
         const options = {new: true};
@@ -28,17 +28,29 @@ exports.updateCarDestination = async function updateCarLocation(carID, location)
     catch(error){
     }
 }
+exports.updateCarLocation = async function updateCarLocation(carID, location) {
+    try{
+        const update = {currentLocation: location};
+        const options = {new: true};
+        const result = await Car.findByIdAndUpdate(carID, {$set: update}, options);
+        return result;
+    }
+    catch(error){
+    }
+}
 
-exports.updateCarStatus = async function updateCarStatus(carID, status) {
+exports.updateCarStatus = async function updateCarStatus(carID, status, location) {
     try {
         const update = {carStatus: status};
         const options = {new: true};
         const result = await Car.findByIdAndUpdate(carID, {$set: update}, options);
+        await updateCarDestination(carID, location);
         if(status !==0){
             setTimeout(async () => {
                 const update = {carStatus: 0};
                 await Car.findByIdAndUpdate(carID, {$set: update}, options);
                 await requestController.deleteLastRequest(carID);
+                await updateCarLocation(carID, location);
             }, 5 * 1000 * 60); 
         }
 
