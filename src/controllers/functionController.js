@@ -1,6 +1,7 @@
 const db = require("../models");
 require('dotenv').config({path: '../../.env'});
 const { EmailClient } = require("@azure/communication-email");
+const userController = require("./userController")
 
 
 const connectionString = process.env.CONN_STR;
@@ -117,6 +118,10 @@ function sendNotification(to, title, body) {
 
 exports.notify = async function notify(username , title, body) {
     try {
+        const lastNotification = userController.getLastNotification(username);
+        if(lastNotification.title === title){
+            return;
+        }
 
         const notification = {
             title: title,

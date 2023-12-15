@@ -42,14 +42,15 @@ exports.create = async (req,res) => {
         heartRate: req.body.heartRate,
         bloodPressure: req.body.bloodPressure,
         location: req.body.location,
-        readingState: req.body.state
+        readingState: req.body.state,
+        isNotify : req.body.isNotify,
     })
     const username = await userController.getUsername(req.body.userID);
         
     const relatives = await userController.getRelative(username);
     if(req.body.state === 2){
        await requestController.sendRequest(req.body.userID, req.body.location);
-    }else if(req.body.state === 1){
+    }else if(req.body.state === 1 && req.body.isNotify === true){
         user  = await userController.findUser(username);
         functionController.notify(username, "Be careful!", "Your readings were recently unstable!, Click to request abmulance");
         await functionController.sendEmail(user.userInfo.email, "Be careful!", "Your readings were recently unstable!");

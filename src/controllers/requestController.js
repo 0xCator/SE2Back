@@ -4,6 +4,18 @@ const carController = require("./carController");
 const userController = require("./userController");
 const functionController = require("./functionController");
 
+function stopBracelet(braceletID) {
+    console.log("hello")
+    const b =JSON.parse(`{"braceletId": "${braceletID}"}`);
+
+    fetch('http://localhost:1337/api/stop/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(b),
+    }).then(response => response).catch(error => console.error('Error:', error));
+}
 exports.deleteLastRequest = async function deleteLastRequest(carID) {
     try {
         const data = await Request.findOneAndDelete({carID: carID}).sort({createdAt: -1});
@@ -25,13 +37,14 @@ exports.sendRequest = async function sendRequest(userId, location ) {
     const relatives = await userController.getRelative(username);
     if(car == null){
         user  = await userController.findUser(username);
-        functionController.notify(username, "Request for Ambulance", "Ambulance is on the way");
-        await functionController.sendEmail(user.userInfo.email, "Request for Ambulance", "Ambulance is on the way");
+        functionController.notify(username, "Rest in peace", "No Ambulance Available");
+        await functionController.sendEmail(user.userInfo.email, "Rest in peace", "No Ambulance Available");
         for (let i = 0; i < relatives.length; i++) {
             rel= await userController.findUser(relatives[i]);
-            functionController.notify(relatives[i], "Request for Ambulance", `Emergency your relative ${username} is dying`);
-            await functionController.sendEmail(rel.userInfo.email, "Request for Ambulance", `Emergency your relative ${username} is dying`);
+            functionController.notify(relatives[i], "Nothing we can do", `Good luck in afterlife ${username}`);
+            await functionController.sendEmail(rel.userInfo.email, "Nothing we can do", `Good luck in afterlife ${username}`);
         }
+
         return -1;
     }
     carController.updateCarStatus(car, 1);
@@ -46,6 +59,7 @@ exports.sendRequest = async function sendRequest(userId, location ) {
     try {
         const dataToSave = await data.save();
         user  = await userController.findUser(username);
+        stopBracelet(user.patientData.pairedBracelet);
         functionController.notify(username, "Request for Ambulance", "Ambulance is on the way");
         await functionController.sendEmail(user.userInfo.email, "Request for Ambulance", "Ambulance is on the way");
         for (let i = 0; i < relatives.length; i++) {
@@ -53,6 +67,7 @@ exports.sendRequest = async function sendRequest(userId, location ) {
             functionController.notify(relatives[i], "Request for Ambulance", `Emergency your relative ${username} is dying`);
             await functionController.sendEmail(rel.userInfo.email, "Request for Ambulance", `Emergency your relative ${username} is dying`);
         }
+
         return 0;
     } catch (error) {
     }
