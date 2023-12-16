@@ -38,7 +38,7 @@ exports.delete = async (req,res) => {
     try {
         const id = req.params.hospitalID;
         const result = await Hospital.findByIdAndDelete(id);
-        res.send('Deleted hospital');
+        res.send({message:'Deleted hospital'});
     } catch(error) {
         res.status(500).json({message: error.message});
     }

@@ -182,7 +182,7 @@ exports.delete = async (req,res) => {
             await requestController.deleteReq(reqToDelete);
         }
         const result = await Users.findByIdAndDelete(id);
-        res.send('Deleted user');
+        res.send({message:'Deleted user'});
     } catch(error) {
         res.status(500).json({message: error.message});
     }

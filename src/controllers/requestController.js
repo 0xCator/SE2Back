@@ -156,7 +156,7 @@ exports.delete = async (req,res) => {
     try {
         const id = req.params.reqID;
         this.deleteReq(id);
-        res.send('Deleted request');
+        res.send({message:'Deleted request'});
     } catch(error) {
         res.status(500).json({message: error.message});
     }

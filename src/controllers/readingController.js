@@ -74,7 +74,7 @@ exports.delete = async (req,res) => {
     try {
         const id = req.params.readingID;
         const result = await Reading.findByIdAndDelete(id);
-        res.send('Deleted reading');
+        res.send({message:'Deleted reading'});
     } catch(error) {
         res.status(500).json({message: error.message});
     }
@@ -83,7 +83,7 @@ exports.delete = async (req,res) => {
 exports.deleteAll = async (req,res) => {
     try {
         const result = await Request.deleteMany({});
-        res.send('deleted all');
+        res.send({message:'deleted all'});
     } catch(error) {
         res.status(500).json({message: error.message});
     }

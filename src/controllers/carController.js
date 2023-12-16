@@ -133,7 +133,7 @@ exports.delete = async (req, res) => {
         }
         // delete car 
         const result = await Car.findByIdAndDelete(id);
-        res.send('Deleted car');
+        res.send({message:'Deleted car'});
     } catch(error) {
         res.status(500).json({message: error.message});
     }
