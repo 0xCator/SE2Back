@@ -22,7 +22,7 @@ exports.deleteLastRequest = async function deleteLastRequest(carID) {
         res.status(500).json({message: error.message});
     }
 }
-exports.sendRequest = async function sendRequest(userId, location, nearestHospital) {
+exports.sendRequest = async function sendRequest(userId, location, nearestHospital,reqType) {
     const car  = await carController.getCar();
     username = await userController.getUsername(userId);
     //check if uer have request or not 
@@ -49,7 +49,7 @@ exports.sendRequest = async function sendRequest(userId, location, nearestHospit
     carController.updateCarStatus(car, 1,location, nearestHospital);
     const data = new Request({
         userID: userId, 
-        requestType:1 , 
+        requestType: reqType , 
         location: location,
         carID: car, 
         hospital: {
@@ -96,7 +96,7 @@ exports.findOne = async (req,res) => {
 }
 
 exports.create = async (req,res) => {
-    const err = this.sendRequest(req.body.userID, req.body.location, req.body.nearestHospital);
+    const err = this.sendRequest(req.body.userID, req.body.location, req.body.nearestHospital,0);
     if(err === -1){
         res.status(500).json({message: "No car available"});
     }else if(err === 1){

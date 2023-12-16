@@ -53,7 +53,7 @@ exports.updateCarStatus = async function updateCarStatus(carID, status, location
             await Car.findByIdAndUpdate(carID, {$set: update}, options);
             await requestController.deleteLastRequest(carID);
             await this.updateCarLocation(carID, loc);
-        }, 5 * 60 * 1000 ); 
+        }, 3 * 60 *  1000 ); 
 
         return result;
     } catch(error) {
