@@ -118,10 +118,6 @@ function sendNotification(to, title, body) {
 
 exports.notify = async function notify(username , title, body) {
     try {
-        const lastNotification = userController.getLastNotification(username);
-        if(lastNotification.title === title){
-            return;
-        }
 
         const notification = {
             title: title,
@@ -139,6 +135,7 @@ exports.notify = async function notify(username , title, body) {
             sendNotification(result.notificationsToken, title, body);
         }
     }catch (error) {
+        console.log(error);
     }
 }
 
