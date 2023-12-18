@@ -1,7 +1,6 @@
 const db = require("../models");
 require('dotenv').config({path: '../../.env'});
 const { EmailClient } = require("@azure/communication-email");
-const userController = require("./userController")
 
 
 const connectionString = process.env.CONN_STR;
@@ -167,7 +166,7 @@ exports.sendNotification = async (req, res) => {
     
 }
 
-function UnpairBracelet(braceletID) {
+exports.UnpairBracelet = async function UnpairBracelet(braceletID) {
     const b =JSON.parse(`{"braceletId": "${braceletID}"}`);
 
     fetch('http://localhost:1337/api/unpair/', {
@@ -192,13 +191,13 @@ exports.pair = async (req, res) => {
         if (result) {
             const currentBracelet = await db.users.findOne(result._id, 'patientData.pairedBracelet');
             if (currentBracelet.patientData.pairedBracelet !== "-1" && currentBracelet.patientData.pairedBracelet !== braceletID) {
-                UnpairBracelet(currentBracelet.patientData.pairedBracelet);
+                this.UnpairBracelet(currentBracelet.patientData.pairedBracelet);
             }
             await db.users.findByIdAndUpdate(result._id, 
                 {$set: {'patientData.pairedBracelet': braceletID}}, 
                 options);
         }else{
-            UnpairBracelet(braceletID);
+            this.UnpairBracelet(braceletID);
         }
         res.json(result);
     } catch (error) {

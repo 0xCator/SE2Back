@@ -1,6 +1,7 @@
 const db = require('../models');
 const Users = db.users;
 const requestController = require('./requestController');
+const functionController = require('./functionController');
 exports.getRelative= async function getRelativePatients(username) {
     try {
         const result = await Users.findOne({username: username}, 'patientData.relatives');
@@ -180,6 +181,7 @@ exports.delete = async (req,res) => {
         if (reqToDelete) {
             await requestController.deleteReq(reqToDelete);
         }
+        functionController.UnpairBracelet(userToDelete.patientData.pairedBracelet);
         const result = await Users.findByIdAndDelete(id);
         res.send({message:'Deleted user'});
     } catch(error) {
